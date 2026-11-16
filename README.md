@@ -17,6 +17,104 @@ Comprehensive testing and mathematical evaluations confirm 100% adherence to the
 
 ---
 
+## 🚀 Quick Start: How to Execute & Run the Project
+
+You can run this project in two ways:
+1. **Instantly on any platform (Windows, macOS, Linux)** using the included Python verification harness.
+2. **Natively as compiled C binaries** on Linux / WSL / macOS using `gcc` and `make`.
+
+---
+
+### Option 1: Instant Run (Cross-Platform / Windows / Linux / macOS)
+The Python verification runner (`verify_fcfs.py`) simulates the exact POSIX 5-step dispatcher algorithm, generates real-time event logs, renders ASCII Gantt charts, and computes full scheduling metrics:
+
+```bash
+# Test 1: Simple Command-Line Format (Image 1 reference dataset)
+python verify_fcfs.py dispatchlist_simple.txt
+
+# Test 2: Full 8-Attribute Host Dispatcher Format
+python verify_fcfs.py dispatchlist_full.txt
+
+# Test 3: Idle CPU Gap Test (Sparse arrivals)
+python verify_fcfs.py dispatchlist_gap.txt
+```
+
+---
+
+### Option 2: Native C Execution (Linux / WSL / Ubuntu / macOS)
+
+#### Prerequisites:
+- `gcc` compiler
+- `make` utility
+
+#### Step-by-Step Instructions:
+```bash
+# 1. Navigate to the project directory
+cd "os first come first serve"
+
+# 2. Compile all components (dispatcher, sleepy workload, and process workload)
+make all
+
+# 3. Run the dispatcher with the simple dispatch list:
+./dispatcher dispatchlist_simple.txt
+
+# 4. Run the dispatcher with the full 8-attribute dispatch list:
+./dispatcher dispatchlist_full.txt
+
+# 5. Run with your own custom input file:
+./dispatcher <path_to_custom_dispatch_list.txt>
+
+# 6. Clean up compiled object files and binaries when done:
+make clean
+```
+
+#### Running on Windows via WSL (Windows Subsystem for Linux):
+If you are on Windows and want to run the native C version:
+```powershell
+# Open WSL in this directory
+wsl
+
+# Build and run
+make all
+./dispatcher dispatchlist_simple.txt
+```
+
+---
+
+### 📋 Expected Console Output Example
+
+When executing `./dispatcher dispatchlist_simple.txt` (or `python verify_fcfs.py dispatchlist_simple.txt`), the dispatcher produces a step-by-step trace:
+
+```text
+======================================================
+   LOADING DISPATCH LIST FILE: dispatchlist_simple.txt
+======================================================
+ [Job  1 Loaded] Arrival:  0 s | Burst:  3 s | Command: sleepy 3
+ [Job  2 Loaded] Arrival:  2 s | Burst:  6 s | Command: sleepy 6
+ [Job  3 Loaded] Arrival:  4 s | Burst:  4 s | Command: sleepy 4
+ [Job  4 Loaded] Arrival:  6 s | Burst:  5 s | Command: sleepy 5
+ [Job  5 Loaded] Arrival:  8 s | Burst:  2 s | Command: sleepy 2
+Total jobs queued: 5
+======================================================
+
+Starting FCFS Dispatcher execution loop...
+--------------------------------------------------------------------------------
+ Time | Event Description
+--------------------------------------------------------------------------------
+[  0 s] Dequeued job from ready queue (Arrival=0 s, Burst=3 s).
+[  0 s] --> Started child process PID 1234 ('sleepy' 3)
+[  1 s] Process PID 1234 ('sleepy') active | Remaining CPU: 2 s
+[  2 s] Process PID 1234 ('sleepy') active | Remaining CPU: 1 s
+[  3 s] Process PID 1234 ('sleepy') completed its CPU burst.
+[  3 s] --> Sending SIGINT to PID 1234 and freeing PCB memory.
+[  3 s] Dequeued job from ready queue (Arrival=2 s, Burst=6 s).
+[  3 s] --> Started child process PID 1235 ('sleepy' 6)
+...
+[ 20 s] All jobs have been dispatched and completed. Dispatcher exiting successfully.
+```
+
+---
+
 ## 2. Problem Statement & Specifications
 
 ### 2.1 Background
